@@ -1,3 +1,5 @@
+
+
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Signal } from '@/types/signal';
@@ -16,26 +18,20 @@ export class BackgroundNotificationManager {
 
   /**
    * Ensure notification channel is created for Android, with high importance, sound, and vibration.
+   * For now, this is a stub -- implement with Capacitor Notification Channel APIs later.
    */
   async createAndroidNotificationChannel() {
-    // Use Capacitor LocalNotifications to create channel if supported
-    // Future: enhance using plugin for full channel config (see AlarmManager plugin for advanced config)
-    if ((window as any).cordova?.platformId === 'android' || /android/i.test(navigator.userAgent)) {
-      try {
-        await LocalNotifications.createChannel?.({
-          id: 'signal_alerts_channel',
-          name: 'Signal Alerts',
-          description: 'Channel for binary signal alert notifications',
-          importance: 5,
-          visibility: 1,
-          sound: 'beep.wav',
-          vibration: true,
-        });
-        console.log('[BackgroundNotificationManager] Created Android notification channel');
-      } catch (e) {
-        // If plugin doesn't support, quietly ignore
-      }
-    }
+    // TODO: Use LocalNotifications.createChannel when Capacitor supports it, or use Cordova plugin/polyfill
+    // Example:
+    // await LocalNotifications.createChannel({
+    //   id: ANDROID_CHANNEL_ID,
+    //   name: 'Signal Alerts',
+    //   description: 'Channel for binary signal alert notifications',
+    //   importance: 5, // max
+    //   visibility: 1, // public
+    //   sound: 'beep.wav', // use actual bundled sound
+    //   vibration: true,
+    // });
   }
 
   async requestPermissions() {
@@ -180,3 +176,4 @@ export class BackgroundNotificationManager {
     return [...this.notificationIds];
   }
 }
+

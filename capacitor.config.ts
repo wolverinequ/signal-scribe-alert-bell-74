@@ -29,25 +29,10 @@ const config: CapacitorConfig = {
       smallIcon: "ic_stat_icon_config_sample",
       iconColor: "#488AFF",
       sound: "beep.wav",
-      channels: [
-        {
-          id: "signal_alerts_channel",
-          name: "Signal Alerts",
-          description: "For binary signal timings",
-          importance: 5,
-          sound: "beep.wav"
-        }
-      ]
     },
     App: {
       handleLaunchUrl: true,
     },
-    AlarmManager: {
-      persistAcrossReboots: true
-    },
-    AndroidSignalPlugin: {
-      // Plugin will be automatically detected
-    }
   },
   android: {
     allowMixedContent: true,
@@ -62,9 +47,7 @@ const config: CapacitorConfig = {
       'android.permission.POST_NOTIFICATIONS',
       'android.permission.WRITE_EXTERNAL_STORAGE',
       'android.permission.READ_EXTERNAL_STORAGE',
-      'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
-      'android.permission.FOREGROUND_SERVICE',
-      'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
+      'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'
     ]
   },
   ios: {

@@ -1,6 +1,6 @@
 
 import { useState, useRef } from 'react';
-import { backgroundService } from '@/utils/backgroundService';
+import { scheduleAllSignalNotifications } from '@/utils/backgroundTaskManager';
 import { Signal } from '@/types/signal';
 
 export const useAntidelayManager = (
@@ -81,7 +81,7 @@ export const useAntidelayManager = (
       
       // Reschedule notifications with new antidelay
       if (savedSignals.length > 0) {
-        backgroundService.scheduleAllSignals(savedSignals);
+        scheduleAllSignalNotifications(savedSignals);
       }
     }
   };
