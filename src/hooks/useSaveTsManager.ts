@@ -64,6 +64,25 @@ export const useSaveTsManager = () => {
       console.log('💾 SaveTsManager: Attempting to write to file at path:', locationInput);
       
       try {
+        // Extract directory path and create it if it doesn't exist
+        const lastSlashIndex = locationInput.lastIndexOf('/');
+        if (lastSlashIndex > -1) {
+          const directoryPath = locationInput.substring(0, lastSlashIndex);
+          console.log('💾 SaveTsManager: Creating directory if needed:', directoryPath);
+          
+          try {
+            await Filesystem.mkdir({
+              path: directoryPath,
+              directory: Directory.ExternalStorage,
+              recursive: true
+            });
+            console.log('💾 SaveTsManager: Directory created/verified:', directoryPath);
+          } catch (dirError) {
+            console.log('💾 SaveTsManager: Directory creation info:', dirError);
+            // Directory might already exist, continue with file write
+          }
+        }
+
         await Filesystem.writeFile({
           path: locationInput,
           data: fileContent,
