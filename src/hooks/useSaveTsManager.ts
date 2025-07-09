@@ -4,7 +4,7 @@ import { processTimestamps } from '@/utils/timestampUtils';
 
 export const useSaveTsManager = () => {
   const [showSaveTsDialog, setShowSaveTsDialog] = useState(false);
-  const [locationInput, setLocationInput] = useState('/sdcard/Documents/');
+  const [locationInput, setLocationInput] = useState('timestamps.txt');
   const [antidelayInput, setAntidelayInput] = useState('15');
   const [saveTsButtonPressed, setSaveTsButtonPressed] = useState(false);
   
@@ -47,30 +47,32 @@ export const useSaveTsManager = () => {
       console.log('💾 SaveTsManager: Current locationInput:', locationInput);
       console.log('💾 SaveTsManager: Current antidelayInput:', antidelayInput);
       
+      // Extract timestamps and process them
+      const antidelaySecondsValue = parseInt(antidelayInput) || 0;
+      console.log('💾 SaveTsManager: Parsed antidelay seconds:', antidelaySecondsValue);
+      
+      const processedTimestamps = processTimestamps(signalsText, antidelaySecondsValue);
+      console.log('💾 SaveTsManager: Processed timestamps result:', processedTimestamps);
+      console.log('💾 SaveTsManager: Number of processed timestamps:', processedTimestamps.length);
+      
+      // Create file content
+      const fileContent = processedTimestamps.join('\n');
+      console.log('💾 SaveTsManager: File content to write:', fileContent);
+      console.log('💾 SaveTsManager: File content length:', fileContent.length);
+      
+      // Write to Android file system (overwrite existing file)
+      const fullPath = `Documents/${locationInput}`;
+      console.log('💾 SaveTsManager: Attempting to write to file at path:', fullPath);
+      
       try {
-        // Extract timestamps and process them
-        const antidelaySecondsValue = parseInt(antidelayInput) || 0;
-        console.log('💾 SaveTsManager: Parsed antidelay seconds:', antidelaySecondsValue);
-        
-        const processedTimestamps = processTimestamps(signalsText, antidelaySecondsValue);
-        console.log('💾 SaveTsManager: Processed timestamps result:', processedTimestamps);
-        console.log('💾 SaveTsManager: Number of processed timestamps:', processedTimestamps.length);
-        
-        // Create file content
-        const fileContent = processedTimestamps.join('\n');
-        console.log('💾 SaveTsManager: File content to write:', fileContent);
-        console.log('💾 SaveTsManager: File content length:', fileContent.length);
-        
-        // Write to Android file system (overwrite existing file)
-        console.log('💾 SaveTsManager: Attempting to write to file at path:', locationInput);
         await Filesystem.writeFile({
-          path: locationInput,
+          path: fullPath,
           data: fileContent,
           directory: Directory.ExternalStorage,
           encoding: Encoding.UTF8
         });
         
-        console.log('💾 SaveTsManager: File written successfully to:', locationInput);
+        console.log('💾 SaveTsManager: File written successfully to:', fullPath);
         console.log('💾 SaveTsManager: Write operation completed successfully');
         
       } catch (error) {
@@ -78,7 +80,7 @@ export const useSaveTsManager = () => {
         console.error('💾 SaveTsManager: Error details:', {
           message: error.message,
           stack: error.stack,
-          path: locationInput,
+          path: fullPath,
           antidelay: antidelayInput
         });
       }
