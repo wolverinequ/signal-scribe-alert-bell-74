@@ -4,7 +4,7 @@ import { processTimestamps } from '@/utils/timestampUtils';
 
 export const useSaveTsManager = () => {
   const [showSaveTsDialog, setShowSaveTsDialog] = useState(false);
-  const [locationInput, setLocationInput] = useState('timestamps.txt');
+  const [locationInput, setLocationInput] = useState('Documents/timestamps.txt');
   const [antidelayInput, setAntidelayInput] = useState('15');
   const [saveTsButtonPressed, setSaveTsButtonPressed] = useState(false);
   
@@ -61,18 +61,17 @@ export const useSaveTsManager = () => {
       console.log('💾 SaveTsManager: File content length:', fileContent.length);
       
       // Write to Android file system (overwrite existing file)
-      const fullPath = `Documents/${locationInput}`;
-      console.log('💾 SaveTsManager: Attempting to write to file at path:', fullPath);
+      console.log('💾 SaveTsManager: Attempting to write to file at path:', locationInput);
       
       try {
         await Filesystem.writeFile({
-          path: fullPath,
+          path: locationInput,
           data: fileContent,
           directory: Directory.ExternalStorage,
           encoding: Encoding.UTF8
         });
         
-        console.log('💾 SaveTsManager: File written successfully to:', fullPath);
+        console.log('💾 SaveTsManager: File written successfully to:', locationInput);
         console.log('💾 SaveTsManager: Write operation completed successfully');
         
       } catch (error) {
@@ -80,7 +79,7 @@ export const useSaveTsManager = () => {
         console.error('💾 SaveTsManager: Error details:', {
           message: error.message,
           stack: error.stack,
-          path: fullPath,
+          path: locationInput,
           antidelay: antidelayInput
         });
       }
@@ -109,14 +108,18 @@ export const useSaveTsManager = () => {
     fileInput.onchange = (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
-        // For web, we use the File API path (which is just the name)
-        // For mobile, we would need the full path, but this gives us the file name
         console.log('💾 SaveTsManager: File browser - original file object:', file);
         console.log('💾 SaveTsManager: File browser - file.name:', file.name);
         console.log('💾 SaveTsManager: File browser - file.webkitRelativePath:', file.webkitRelativePath);
         
-        setLocationInput(file.name);
-        console.log('💾 SaveTsManager: File selected and locationInput updated to:', file.name);
+        // Extract directory from current location and append the new filename
+        const currentPath = locationInput;
+        const lastSlashIndex = currentPath.lastIndexOf('/');
+        const directoryPath = lastSlashIndex > -1 ? currentPath.substring(0, lastSlashIndex + 1) : 'Documents/';
+        const newPath = directoryPath + file.name;
+        
+        setLocationInput(newPath);
+        console.log('💾 SaveTsManager: File selected and locationInput updated to:', newPath);
       } else {
         console.log('💾 SaveTsManager: File browser - no file selected');
       }

@@ -45,7 +45,7 @@ const SaveTsDialog = ({
             <div className="flex gap-2">
               <Input
                 id="location"
-                placeholder="Select a file or enter path manually"
+                placeholder="e.g., Documents/timestamps.txt or Download/my-file.txt"
                 value={locationValue}
                 onChange={(e) => onLocationChange(e.target.value)}
                 className="flex-1"
