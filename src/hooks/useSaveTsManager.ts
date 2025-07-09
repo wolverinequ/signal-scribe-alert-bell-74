@@ -89,10 +89,8 @@ export const useSaveTsManager = () => {
   const handleSaveTsMouseLeave = () => {
     console.log('💾 SaveTsManager: Save Ts button mouse leave');
     setSaveTsButtonPressed(false);
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
+    // Don't clear timeout on mouse leave to prevent inspection interference
+    // Only clear on mouse up or touch end
   };
 
   // File browser handler
